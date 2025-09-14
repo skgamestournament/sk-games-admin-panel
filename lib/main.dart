@@ -48,7 +48,7 @@ class AdminApp extends StatelessWidget {
           ),
         ),
       ),
-      home: isAdminLoggedIn ? const AdminDashboardPage() : const AdminLoginPage(),
+      home: isAdminLoggedIn ? const AdminMainLayout() : const AdminLoginPage(),
     );
   }
 }
