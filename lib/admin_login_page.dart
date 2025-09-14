@@ -32,7 +32,7 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isAdminLoggedIn', true);
         if (mounted) {
-           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminDashboardPage()));
+           Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminMainLayout()));
         }
       } else {
         // Login failed
