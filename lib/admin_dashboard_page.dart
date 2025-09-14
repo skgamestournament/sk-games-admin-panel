@@ -22,15 +22,14 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Future<void> _fetchStats() async {
     setState(() => _isLoading = true);
     try {
-      // Fetch total users count
-      final usersResponse = await supabase.from('users').select('id', const FetchOptions(count: CountOption.exact));
-      // Fetch total tournaments count
-      final tournamentsResponse = await supabase.from('tournaments').select('id', const FetchOptions(count: CountOption.exact));
+      // CORRECTED CODE: This is the new, correct way to get the count.
+      final usersCount = await supabase.from('users').count();
+      final tournamentsCount = await supabase.from('tournaments').count();
 
       if (mounted) {
         setState(() {
-          _totalUsers = usersResponse.count;
-          _totalTournaments = tournamentsResponse.count;
+          _totalUsers = usersCount;
+          _totalTournaments = tournamentsCount;
         });
       }
     } catch (e) {
@@ -61,7 +60,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
                   _buildStatCard('Total Revenue', '₹0', Icons.trending_up, Colors.red),
                 ],
               ),
-              // You can add more dashboard widgets here like charts or recent activity
             ],
           ),
         );
