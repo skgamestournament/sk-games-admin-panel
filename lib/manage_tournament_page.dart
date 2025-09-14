@@ -34,7 +34,7 @@ class _ManageTournamentPageState extends State<ManageTournamentPage> {
     setState(() => _isLoading = true);
     try {
       final tDetails = await supabase.from('tournaments').select().eq('id', widget.tournamentId).single();
-      final pList = await supabase.from('participants').select('*, users(username)').eq('tournament_id', widget.tournamentId);
+      final pList = await supabase.from('participants').select('*, users(id, username)').eq('tournament_id', widget.tournamentId);
       
       if (mounted) {
         setState(() {
@@ -56,7 +56,7 @@ class _ManageTournamentPageState extends State<ManageTournamentPage> {
       await supabase.from('tournaments').update({
         'room_id': _roomIdController.text.trim(),
         'room_password': _roomPasswordController.text.trim(),
-        'status': 'live' // Mark the tournament as live
+        'status': 'live'
       }).eq('id', widget.tournamentId);
       _showSuccessSnackBar('Room details updated and tournament is LIVE!');
       _fetchData();
@@ -71,7 +71,6 @@ class _ManageTournamentPageState extends State<ManageTournamentPage> {
       return;
     }
 
-    // Confirmation Dialog
     final confirm = await showDialog<bool>(context: context, builder: (context) => AlertDialog(
       title: const Text('Confirm Winner'),
       content: const Text('Are you sure? This will end the match and distribute the prize. This action cannot be undone.'),
@@ -90,7 +89,7 @@ class _ManageTournamentPageState extends State<ManageTournamentPage> {
         'p_winner_user_id': _selectedWinnerId,
       });
       _showSuccessSnackBar('Winner declared successfully!');
-      Navigator.of(context).pop(); // Go back to tournament list
+      Navigator.of(context).pop();
     } catch (e) {
        _showErrorSnackBar('Error declaring winner');
     } finally {
@@ -135,7 +134,8 @@ class _ManageTournamentPageState extends State<ManageTournamentPage> {
                     if (_participants.isNotEmpty) DropdownButtonFormField<String>(
                       value: _selectedWinnerId,
                       hint: const Text('Select a participant'),
-                      items: _participants.map((p) => DropdownMenuItem(value: p['users']['id'], child: Text(p['users']['username']))).toList(),
+                      // CORRECTED LINE: Explicitly defining the type <String> for DropdownMenuItem
+                      items: _participants.map((p) => DropdownMenuItem<String>(value: p['users']['id'], child: Text(p['users']['username']))).toList(),
                       onChanged: (value) => setState(() => _selectedWinnerId = value),
                     ) else const Text('No participants have joined yet.'),
                     const SizedBox(height: 16),
