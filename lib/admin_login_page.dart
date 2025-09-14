@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'main.dart'; // To access supabase client
-import 'admin_dashboard_page.dart'; // We will create this next
+import 'main.dart';
+import 'admin_main_layout.dart'; // CORRECTED: This import was missing
+import 'admin_dashboard_page.dart';
 
 class AdminLoginPage extends StatefulWidget {
   const AdminLoginPage({super.key});
@@ -28,14 +29,12 @@ class _AdminLoginPageState extends State<AdminLoginPage> {
       });
 
       if (result == true) {
-        // Login success, save session and navigate
         final prefs = await SharedPreferences.getInstance();
         await prefs.setBool('isAdminLoggedIn', true);
         if (mounted) {
            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const AdminMainLayout()));
         }
       } else {
-        // Login failed
         _showErrorSnackBar('Invalid username or password.');
       }
     } catch (e) {
